@@ -1,0 +1,37 @@
+# Dependências
+node_modules/
+.pnp
+.pnp.js
+
+# Build e arquivos compilados (NestJS e Frontend)
+dist/
+build/
+out/
+.next/
+
+# Variáveis de ambiente 
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Logs de erro
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Cobertura de testes (Gerados pelo Vitest/Jest)
+coverage/
+.nyc_output/
+
+# Caches e ferramentas
+.nx/
+.eslintcache
+.stylelintcache
+
+# Arquivos de Sistema Operacional
+.DS_Store
+Thumbs.db
