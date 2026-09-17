@@ -64,4 +64,24 @@ describe('UsersService', () => {
       expect(mockPrismaService.user.delete).not.toHaveBeenCalled();
     });
   });
+
+  describe('removeSelf', () => {
+    it('deve remover a própria conta com sucesso', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue({ id: '1', role: 'PARTICIPANT' });
+      mockPrismaService.user.delete.mockResolvedValue({ id: '1' });
+
+      const result = await service.removeSelf('1');
+
+      expect(mockPrismaService.user.findUnique).toHaveBeenCalledWith({ where: { id: '1' } });
+      expect(mockPrismaService.user.delete).toHaveBeenCalledWith({ where: { id: '1' } });
+      expect(result).toEqual({ message: 'Sua conta foi removida com sucesso' });
+    });
+
+    it('deve lançar NotFoundException se o usuário não existe', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue(null);
+
+      await expect(service.removeSelf('id-inexistente')).rejects.toThrow(NotFoundException);
+      expect(mockPrismaService.user.delete).not.toHaveBeenCalled();
+    });
+  });
 });
