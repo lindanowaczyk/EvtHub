@@ -1,5 +1,4 @@
 import { Controller, Get, Delete, Param, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UsersService } from './users.service';
 import { Role } from '@prisma/client';
@@ -18,6 +17,12 @@ export class UsersController {
   @Get('me')
   getMe(@Req() req: AuthenticatedRequest) {
     return this.usersService.findById(req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('me')
+  removeSelf(@Req() req: AuthenticatedRequest) {
+    return this.usersService.removeSelf(req.user.userId);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
