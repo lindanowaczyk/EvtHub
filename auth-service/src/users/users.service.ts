@@ -1,5 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+
 
 @Injectable()
 export class UsersService {
@@ -17,4 +19,30 @@ export class UsersService {
 
     return user;
   }
+
+  // DELETE /users/:id => só ORGANIZER pode chamar
+  async remove(id: string, requesterId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+
+    if (user.role === Role.ORGANIZER && user.id !== requesterId) {
+      throw new ForbiddenException('Organizadores não podem remover outros organizadores');
+    }
+
+    await this.prisma.user.delete({ where: { id } });
+    return { message: 'Usuário removido com sucesso' };
+  }
+
+  // DELETE /users/me — qualquer usuário autenticado remove a própria conta
+  async removeSelf(userId: string) {
+  const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
+  if (!user) {
+    throw new NotFoundException('Usuário não encontrado');
+  }
+  
+  await this.prisma.user.delete({ where: { id: userId } }); // reutiliza o remove para deletar o próprio usuário
+  return { message: 'Sua conta foi removida com sucesso' };
+}
 }
