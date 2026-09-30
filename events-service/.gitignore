@@ -3,3 +3,4 @@ dist/
 .env
 /generated/prisma
 tsconfig.build.tsbuildinfo
+prisma.config.ts

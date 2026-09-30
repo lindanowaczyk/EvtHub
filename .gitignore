@@ -35,3 +35,5 @@ coverage/
 # Arquivos de Sistema Operacional
 .DS_Store
 Thumbs.db
+
+prisma.config.ts
